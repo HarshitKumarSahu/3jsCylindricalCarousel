@@ -15,7 +15,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x050505);
 
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x050505, 0.02);
+// scene.fog = new THREE.FogExp2(0x050505, 0.02);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 camera.position.set(0, 0, 18);
@@ -30,6 +30,9 @@ const redLight = new THREE.PointLight(0xff0000, 1, 20);
 redLight.position.set(-5, 0, 5);
 scene.add(redLight);
 
+const ambientLight = new THREE.AmbientLight(0x404040, 20)
+scene.add(ambientLight)
+
 // --- Central Wireframe Model ---
 const gltfLoader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
@@ -38,16 +41,16 @@ gltfLoader.setDRACOLoader(dracoLoader);
 
 gltfLoader.load('/model/hand.glb', (gltf) => {
     const model = gltf.scene;
-    // model.traverse((child) => {
-    //     if (child.isMesh) {
-    //         child.material = new THREE.MeshBasicMaterial({
-    //             color: 0x444444,
-    //             wireframe: true,
-    //             transparent: true,
-    //             // opacity: 0.3
-    //         });
-    //     }
-    // });
+    model.traverse((child) => {
+        if (child.isMesh) {
+            child.material = new THREE.MeshNormalMaterial({
+                // color: 0xf8f8f8,
+                // wireframe: true,
+                // transparent: true,
+                // opacity: 0.3
+            });
+        }
+    });
     model.scale.set(4, 4, 4);
     
     const box = new THREE.Box3().setFromObject(model);
@@ -65,8 +68,8 @@ gltfLoader.load('/model/hand.glb', (gltf) => {
 // --- Config ---
 const config = {
     radius: 10,
-    slideWidth: 6,
-    slideHeight: 4,
+    slideWidth: 4,
+    slideHeight: 3,
     segmentsX: 32,
     verticalSpacing: 5,
     totalRows: 6,
@@ -211,10 +214,10 @@ const getTexture = (index) => {
 // Circumference = 2 * PI * Radius
 const circumference = 2 * Math.PI * config.radius;
 // We subtract a tiny amount (0.05) to prevent Z-fighting at the edges
-const exactWidth = (circumference / config.cardsPerRow) - 0.05;
+const exactWidth = (circumference / config.cardsPerRow) - 3;
 
 // Update Geometry with new width and segments
-const geometry = new THREE.PlaneGeometry(exactWidth, config.slideHeight, config.segmentsX, 1);
+const geometry = new THREE.PlaneGeometry(exactWidth, config.slideHeight, config.segmentsX, 16);
 
 for (let r = 0; r < config.totalRows; r++) {
     for (let c = 0; c < config.cardsPerRow; c++) {
