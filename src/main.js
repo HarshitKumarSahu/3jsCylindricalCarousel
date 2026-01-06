@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
@@ -7,7 +6,6 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { RGBShiftShader } from 'three/addons/shaders/RGBShiftShader.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
 
 const canvas = document.getElementById('canvas');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -42,9 +40,16 @@ const config = {
     totalRows: 6,
     cardsPerRow: 10,
     images: [
-        "/projects/1.png", "/projects/2.png", "/projects/3.png", "/projects/4.png",
-        "/projects/5.png", "/projects/6.png", "/projects/7.png", "/projects/8.png",
-        "/projects/9.png", "/projects/10.png",
+        "/projects/1.png", 
+        "/projects/2.png", 
+        "/projects/3.png", 
+        "/projects/4.png",
+        "/projects/5.png", 
+        "/projects/6.png", 
+        "/projects/7.png", 
+        "/projects/8.png",
+        "/projects/9.png", 
+        "/projects/10.png",
     ]
 };
 
@@ -122,7 +127,7 @@ const fragmentShader = `
     void main() {
         vec4 tex = texture2D(uTexture, vUv);
         float gray = dot(tex.rgb, vec3(0.299, 0.587, 0.114));
-        vec3 finalColor = vec3(gray * 0.3); // Dark Grey
+        vec3 finalColor = vec3(gray * 0.25); // Dark Grey
         
         // Fog logic inside shader (optional, but Scene Fog usually handles this better globally)
         // We will rely on scene.fog for the main fade, but keep this for opacity fade
@@ -163,10 +168,17 @@ const exactWidth = (circumference / config.cardsPerRow) * 0.85;
 const imageGeometry = new THREE.PlaneGeometry(exactWidth, config.slideHeight, config.segmentsX, config.segmentsY);
 const wireframeGeometry = new THREE.PlaneGeometry(exactWidth, config.slideHeight, 1, 1);
 
+const loadedTextures = config.images.map(path => {
+    const t = textureLoader.load(path);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+});
+
 for (let r = 0; r < config.totalRows; r++) {
     for (let c = 0; c < config.cardsPerRow; c++) {
         const cardRandom = Math.random();
-        const tex = textureLoader.load(config.images[(r * config.cardsPerRow + c) % config.images.length]);
+        // const tex = textureLoader.load(config.images[(r * config.cardsPerRow + c) % config.images.length]);
+        const tex = loadedTextures[Math.floor(Math.random() * loadedTextures.length)];
         tex.colorSpace = THREE.SRGBColorSpace;
 
         const baseY = (r - config.totalRows / 2 + 0.5) * config.verticalSpacing;
@@ -234,12 +246,11 @@ for (let r = 0; r < config.totalRows; r++) {
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.001, 0.125, 0.075);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.0125, 0.125, 0.075);
 composer.addPass(bloomPass);
 
-
 const rgbShiftPass = new ShaderPass(RGBShiftShader);
-rgbShiftPass.uniforms['amount'].value = 1.75;
+rgbShiftPass.uniforms['amount'].value = 0.00225;
 composer.addPass(rgbShiftPass);
 
 // --- Interaction State ---
@@ -271,8 +282,9 @@ function animate() {
     scrollY += (targetScrollY - scrollY) * 0.05;
     velocity = scrollY - prevScrollY;
 
-    bloomPass.strength = 0.001 + Math.abs(velocity) * 0.1; 
-    rgbShiftPass.uniforms['amount'].value = 0.001 + Math.abs(velocity) * 0.01;
+    bloomPass.strength = 0.0125 + Math.abs(velocity) * 0.125; 
+    // rgbShiftPass.uniforms['amount'].value = 0.001 + Math.abs(velocity) * 0.01125;
+    rgbShiftPass.uniforms['amount'].value = 0.00225 + (Math.abs(velocity) * 0.01);
 
     mouse.x += (targetMouse.x - mouse.x) * 0.05;
     mouse.y += (targetMouse.y - mouse.y) * 0.05;
@@ -307,3 +319,6 @@ window.addEventListener('resize', () => {
     composer.setSize(window.innerWidth, window.innerHeight);
     bloomPass.setSize(window.innerWidth, window.innerHeight);
 });
+
+
+
