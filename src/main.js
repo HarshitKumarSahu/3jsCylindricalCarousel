@@ -351,7 +351,10 @@ const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(backgroundColor, 0.035);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 0, 18);
+let laptopCameraPos = 18
+let mobileCameraPos = 22
+let zCameraPos = window.innerWidth > 600 ? laptopCameraPos : mobileCameraPos
+camera.position.set(0, 0, zCameraPos);
 
 // --- Lighting ---
 scene.add(new THREE.AmbientLight(0xffffff, 0.8));
@@ -624,7 +627,7 @@ window.addEventListener('touchmove', (e) => {
     const deltaY = touchStartY - touchY; 
     
     // Update targetScrollY (adjust sensitivity with the multiplier)
-    targetScrollY += deltaY * 0.015; 
+    targetScrollY += deltaY * 0.075; 
     
     // Update start position for continuous scrolling
     touchStartY = touchY;

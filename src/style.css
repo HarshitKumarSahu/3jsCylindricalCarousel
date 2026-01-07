@@ -21,13 +21,14 @@
 html, body {
     width: 100%;
     height: 100%;
-    background-color: grey;
+    background-color: #121212;
     font-family: 'Roboto', system-ui, sans-serif;
     /* smoothing the font */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* smooth scroll */
     scroll-behavior: smooth;
+    overflow: hidden;
 }
 
 a {
@@ -70,15 +71,8 @@ img {
 
 /* Responsive Media Queries (Mobile-First) */
 /* Phone view: up to 576px */
-@media (max-width: 576px) {
-    html, body {
-        background-color: brown;
-    }
-}
-
-/* Tablet view: 577px to 768px */
-@media (min-width: 577px) and (max-width: 768px) {
-    html, body {
-        background-color: cadetblue;
+@media (max-width: 600px) {
+    #canvas {
+        height: 100vh;
     }
 }
