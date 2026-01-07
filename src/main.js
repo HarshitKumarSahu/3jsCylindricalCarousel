@@ -40,16 +40,21 @@ const config = {
     totalRows: 6,
     cardsPerRow: 10,
     images: [
-        "/projects/1.png", 
-        "/projects/2.png", 
-        "/projects/3.png", 
-        "/projects/4.png",
-        "/projects/5.png", 
-        "/projects/6.png", 
-        "/projects/7.png", 
-        "/projects/8.png",
-        "/projects/9.png", 
-        "/projects/10.png",
+        "/projects/1.jpg", 
+        "/projects/2.jpg", 
+        "/projects/3.jpg", 
+        "/projects/4.jpg",
+        "/projects/5.jpg", 
+        "/projects/6.jpg", 
+        "/projects/7.jpg", 
+        "/projects/8.jpg",
+        "/projects/9.jpg", 
+        "/projects/10.jpg",
+        "/projects/11.jpg",
+        "/projects/12.jpg",
+        "/projects/13.jpg",
+        "/projects/14.jpg",
+        "/projects/15.jpg",
     ]
 };
 
@@ -205,7 +210,7 @@ for (let r = 0; r < config.totalRows; r++) {
         const imgMat = new THREE.ShaderMaterial({
             uniforms: {
                 uTexture: { value: tex },
-                uOpacity: { value: 1 },
+                uOpacity: { value: 5 },
                 uRadius: { value: config.radius },
                 uTime: { value: 0 },
                 uRandom: { value: cardRandom },

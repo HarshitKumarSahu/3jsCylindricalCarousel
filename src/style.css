@@ -65,7 +65,9 @@ img {
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
+    padding-left: 1vw;
 }
+
 /* Responsive Media Queries (Mobile-First) */
 /* Phone view: up to 576px */
 @media (max-width: 576px) {
